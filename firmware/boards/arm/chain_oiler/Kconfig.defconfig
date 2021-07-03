@@ -1,0 +1,8 @@
+# STM32 Chain Oiler Board Configuration
+
+if BOARD_STM32_CHAIN_OILER
+
+config BOARD
+	default "chain_oiler" if BOARD_STM32_CHAIN_OILER
+
+endif # BOARD_STM32_CHAIN_OILER

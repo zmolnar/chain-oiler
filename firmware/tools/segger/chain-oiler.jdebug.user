@@ -1,0 +1,25 @@
+
+
+Breakpoint=0x08007882, State=BP_STATE_DISABLED
+Breakpoint=0x0800788E, State=BP_STATE_DISABLED
+Breakpoint=0x0800D30C, State=BP_STATE_DISABLED
+OpenDocument="cbprintf_complete.c", FilePath="/home/zmolnar/Github/chain-oiler/firmware/zephyr/lib/os/cbprintf_complete.c", Line=781
+OpenDocument="kernel.h", FilePath="/home/zmolnar/Github/chain-oiler/firmware/build/zephyr/include/generated/syscalls/kernel.h", Line=155
+OpenDocument="init.c", FilePath="/home/zmolnar/Github/chain-oiler/firmware/zephyr/kernel/init.c", Line=211
+OpenDocument="reset.S", FilePath="/home/zmolnar/Github/chain-oiler/firmware/zephyr/arch/arm/core/aarch32/cortex_m/reset.S", Line=96
+OpenDocument="cpu_idle.S", FilePath="/home/zmolnar/Github/chain-oiler/firmware/zephyr/arch/arm/core/aarch32/cpu_idle.S", Line=99
+OpenDocument="misc.h", FilePath="/home/zmolnar/Github/chain-oiler/firmware/zephyr/include/arch/arm/aarch32/misc.h", Line=12
+OpenToolbar="Debug", Floating=0, x=0, y=0
+OpenWindow="Registers 1", DockArea=RIGHT, x=0, y=0, w=405, h=488, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, FilteredItems=[], RefreshRate=1
+OpenWindow="Disassembly", DockArea=BOTTOM, x=0, y=0, w=322, h=290, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Memory 1", DockArea=BOTTOM, x=1, y=0, w=481, h=290, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0, EditorAddress=0x547AE100
+OpenWindow="Watched Data 1", DockArea=LEFT, x=0, y=0, w=337, h=341, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Functions", DockArea=LEFT, x=0, y=1, w=337, h=141, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+OpenWindow="Terminal", DockArea=BOTTOM, x=2, y=0, w=785, h=290, FilterBarShown=0, TotalValueBarShown=0, ToolBarShown=0
+TableHeader="Functions", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Address";"Size";"#Insts";"Source"], ColWidths=[1183;100;100;100;224]
+TableHeader="Power Sampling", SortCol="Index", SortOrder="ASCENDING", VisibleCols=["Index";"Time";"Ch 0"], ColWidths=[100;100;100]
+TableHeader="Registers 1", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Value";"Description"], ColWidths=[163;105;350]
+TableHeader="Watched Data 1", SortCol="Expression", SortOrder="ASCENDING", VisibleCols=["Expression";"Value";"Location";"Refresh"], ColWidths=[100;100;100;100]
+TableHeader="RegisterSelectionDialog", SortCol="None", SortOrder="ASCENDING", VisibleCols=[], ColWidths=[]
+TableHeader="TargetExceptionDialog", SortCol="Name", SortOrder="ASCENDING", VisibleCols=["Name";"Value";"Address";"Description"], ColWidths=[200;100;100;358]
+WatchedExpression="thread", DisplayFormat=DISPLAY_FORMAT_BINARY, Window=Watched Data 1

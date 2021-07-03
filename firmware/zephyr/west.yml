@@ -1,0 +1,44 @@
+# The west manifest file for upstream Zephyr.
+#
+# The per-installation west configuration file, .west/config, sets the
+# path to the project containing this file in the [manifest] section's
+# "path" variable.
+#
+# You are free to create your own manifest files and put them in any
+# repository you want, to create your own custom Zephyr installations.
+# For example, you could create a manifest file in your own out of
+# tree application directory, which would pull this zephyr repository
+# in as an ordinary project.
+#
+# You can pass your manifest repositories to west init when creating a
+# new Zephyr installation. See the west documentation for more
+# information.
+
+manifest:
+  defaults:
+    remote: upstream
+
+  remotes:
+    - name: upstream
+      url-base: https://github.com/zephyrproject-rtos
+
+  #
+  # Please add items below based on alphabetical order
+  projects:
+    - name: cmsis
+      revision: c3bd2094f92d574377f7af2aec147ae181aa5f8e
+      path: modules/hal/cmsis
+    - name: hal_st
+      revision: b52fdbf4b62439be9fab9bb4bae9690a42d2fb14
+      path: modules/hal/st
+    - name: hal_stm32
+      revision: f8ff8d25aa0a9e65948040c7b47ec67f3fa300df
+      path: modules/hal/stm32
+    - name: segger
+      revision: 3a52ab222133193802d3c3b4d21730b9b1f1d2f6
+      path: modules/debug/segger
+    
+
+  self:
+    path: zephyr
+    west-commands: scripts/west-commands.yml

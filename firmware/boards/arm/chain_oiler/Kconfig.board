@@ -1,0 +1,6 @@
+# STM32 Chain Oiler Board Configuration
+
+config BOARD_STM32_CHAIN_OILER
+	bool "STM32 Chain Oiler"
+	depends on SOC_STM32F103X8
+	

@@ -1,0 +1,5 @@
+build
+modules
+zephyr
+!zephyr/west.yml
+

@@ -1,0 +1,13 @@
+# SPDX-License-Identifier: Apache-2.0
+
+CONFIG_SOC_SERIES_STM32F1X=y
+CONFIG_SOC_STM32F103X8=y
+
+# enable pinmux
+CONFIG_PINMUX=y
+
+# enable GPIO
+CONFIG_GPIO=y
+
+# enable clock control
+CONFIG_CLOCK_CONTROL=y
