@@ -35,11 +35,9 @@ int main(void) {
   while (true) {
     palSetLine(LINE_GPS_STATUS);
     palSetLine(LINE_OUTPUT_ON);
-    ITM_SendChar('z');
     chThdSleepMilliseconds(500);
     palClearLine(LINE_GPS_STATUS);
     palClearLine(LINE_OUTPUT_ON);
-    ITM_SendChar('z');
     chThdSleepMilliseconds(500);
   }
 }
