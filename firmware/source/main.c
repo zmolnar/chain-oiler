@@ -17,6 +17,10 @@
 #include "ch.h"
 #include "hal.h"
 
+#include "GpsReaderThread.h"
+
+static THD_WORKING_AREA(waGpsReaderThread, 8192);
+
 /*
  * Application entry point.
  */
@@ -32,11 +36,17 @@ int main(void) {
   halInit();
   chSysInit();
 
+  GpsReaderThreadInit();
+
+  chThdCreateStatic(waGpsReaderThread,
+                    sizeof(waGpsReaderThread),
+                    NORMALPRIO,
+                    GpsReaderThread,
+                    NULL);  
+
   while (true) {
-    palSetLine(LINE_GPS_STATUS);
     palSetLine(LINE_OUTPUT_ON);
     chThdSleepMilliseconds(500);
-    palClearLine(LINE_GPS_STATUS);
     palClearLine(LINE_OUTPUT_ON);
     chThdSleepMilliseconds(500);
   }
