@@ -50,8 +50,8 @@
 #define GPIOA_PIN6                  6U
 #define GPIOA_PIN7                  7U
 #define GPIOA_PIN8                  8U
-#define GPIOA_PIN9                  9U
-#define GPIOA_PIN10                 10U
+#define GPIOA_UART1_TX              9U
+#define GPIOA_UART1_RX              10U
 #define GPIOA_PIN11                 11U
 #define GPIOA_PIN12                 12U
 #define GPIOA_SWDIO                 13U
@@ -178,11 +178,11 @@
 /*
  * Port A setup.
  * Everything input with pull-up except:
- * PA13 - Pull-up input             (GPIOA_SWDIO).
- * PA14 - Pull-down input           (GPIOA_SWCLK).
+ * PA9  - Alternate Push Pull output 50MHz (GPIOA_UART1_TX).
+ * PA10 - Pull-up input                    (GPIOA_UART1_RX).
  */
 #define VAL_GPIOACRL            0x88888888      /*  PA7...PA0 */
-#define VAL_GPIOACRH            0x88888888      /* PA15...PA8 */
+#define VAL_GPIOACRH            0x888888B8      /* PA15...PA8 */
 #define VAL_GPIOAODR            0xFFFFBFDF
 
 /*

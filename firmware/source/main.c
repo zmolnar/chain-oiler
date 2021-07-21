@@ -19,7 +19,7 @@
 
 #include "GpsReaderThread.h"
 
-static THD_WORKING_AREA(waGpsReaderThread, 8192);
+static THD_WORKING_AREA(waGpsReaderThread, 4096);
 
 /*
  * Application entry point.

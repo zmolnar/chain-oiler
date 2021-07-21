@@ -25,6 +25,12 @@
 /*****************************************************************************/
 /* DEFINITION OF GLOBAL CONSTANTS AND VARIABLES                              */
 /*****************************************************************************/
+static SerialConfig gps_uart_config = {
+  .speed = 9600,
+  .cr1 = 0,
+  .cr2 = 0,
+  .cr3 = 0,
+};
 
 /*****************************************************************************/
 /* DECLARATION OF LOCAL FUNCTIONS                                            */
@@ -38,14 +44,18 @@
 /* DEFINITION OF GLOBAL FUNCTIONS                                            */
 /*****************************************************************************/
 THD_FUNCTION(GpsReaderThread, arg) {
+
   (void)arg;
+  
   chRegSetThreadName("gps-reader-thread");
 
+  sdStart(&SD1, &gps_uart_config);
+
   while(true) {
-    palSetLine(LINE_GPS_STATUS);
-    chThdSleepMilliseconds(100);
-    palClearLine(LINE_GPS_STATUS);
-    chThdSleepMilliseconds(100);
+    msg_t c = sdGet(&SD1);
+
+    ITM_SendChar(c);
+
   }
 } 
 
