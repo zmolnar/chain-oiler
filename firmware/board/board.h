@@ -70,7 +70,7 @@
 #define GPIOB_GPS_STATUS            9U
 #define GPIOB_PIN10                 10U
 #define GPIOB_PIN11                 11U
-#define GPIOB_PIN12                 12U
+#define GPIOB_GPS_3DFIX             12U
 #define GPIOB_PIN13                 13U
 #define GPIOB_PIN14                 14U
 #define GPIOB_PIN15                 15U
@@ -150,6 +150,7 @@
  */
 #define LINE_OUTPUT_ON              PAL_LINE(GPIOB, GPIOB_OUTPUT_ON)
 #define LINE_GPS_STATUS             PAL_LINE(GPIOB, GPIOB_GPS_STATUS)
+#define LINE_GPS_3DFIX              PAL_LINE(GPIOB, GPIOB_GPS_3DFIX)
 
 /*
  * I/O ports initial setup, this configuration is established soon after reset
@@ -192,7 +193,7 @@
  */
 #define VAL_GPIOBCRL            0x8888B888      /*  PB7...PB0 */
 #define VAL_GPIOBCRH            0x88888833      /* PB15...PB8 */
-#define VAL_GPIOBODR            0xFFFFFFFF
+#define VAL_GPIOBODR            0xFFFFEFFF
 
 /*
  * Port C setup.

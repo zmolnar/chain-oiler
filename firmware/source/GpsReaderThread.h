@@ -30,9 +30,17 @@
 /*****************************************************************************/
 /* DECLARATION OF GLOBAL FUNCTIONS                                           */
 /*****************************************************************************/
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 THD_FUNCTION(GpsReaderThread, arg);
 
 void GpsReaderThreadInit(void);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif /* GPS_READER_THREAD_H */
 

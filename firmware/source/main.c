@@ -45,9 +45,6 @@ int main(void) {
                     NULL);  
 
   while (true) {
-    palSetLine(LINE_OUTPUT_ON);
-    chThdSleepMilliseconds(500);
-    palClearLine(LINE_OUTPUT_ON);
-    chThdSleepMilliseconds(500);
+    chThdSleepMilliseconds(1000);
   }
 }
