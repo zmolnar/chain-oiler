@@ -44,11 +44,11 @@
 #define GPIOA_PIN0                  0U
 #define GPIOA_PIN1                  1U
 #define GPIOA_PIN2                  2U
-#define GPIOA_PIN3                  3U
-#define GPIOA_PIN4                  4U
-#define GPIOA_PIN5                  5U
-#define GPIOA_PIN6                  6U
-#define GPIOA_PIN7                  7U
+#define GPIOA_DCM_SLEEP             3U
+#define GPIOA_DCM_AIN1              4U
+#define GPIOA_DCM_AIN2              5U
+#define GPIOA_DCM_BIN2              6U
+#define GPIOA_DCM_BIN1              7U
 #define GPIOA_PIN8                  8U
 #define GPIOA_UART1_TX              9U
 #define GPIOA_UART1_RX              10U
@@ -66,7 +66,7 @@
 #define GPIOB_PIN5                  5U
 #define GPIOB_PIN6                  6U
 #define GPIOB_PIN7                  7U
-#define GPIOB_OUTPUT_ON             8U
+#define GPIOB_OUTPUT_STATUS         8U
 #define GPIOB_GPS_STATUS            9U
 #define GPIOB_PIN10                 10U
 #define GPIOB_PIN11                 11U
@@ -148,7 +148,12 @@
 /*
  * IO line assignments
  */
-#define LINE_OUTPUT_ON              PAL_LINE(GPIOB, GPIOB_OUTPUT_ON)
+#define LINE_DCM_SLEEP              PAL_LINE(GPIOA, GPIOA_DCM_SLEEP)
+#define LINE_DCM_AIN1               PAL_LINE(GPIOA, GPIOA_DCM_AIN1)
+#define LINE_DCM_AIN2               PAL_LINE(GPIOA, GPIOA_DCM_AIN2)
+#define LINE_DCM_BIN1               PAL_LINE(GPIOA, GPIOA_DCM_BIN1)
+#define LINE_DCM_BIN2               PAL_LINE(GPIOA, GPIOA_DCM_BIN2)
+#define LINE_OUTPUT_STATUS          PAL_LINE(GPIOB, GPIOB_OUTPUT_STATUS)
 #define LINE_GPS_STATUS             PAL_LINE(GPIOB, GPIOB_GPS_STATUS)
 #define LINE_GPS_3DFIX              PAL_LINE(GPIOB, GPIOB_GPS_3DFIX)
 

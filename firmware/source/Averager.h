@@ -1,19 +1,21 @@
 /**
- * @file GpsReaderThread.h
- * @brief
+ * @file Averager.h
+ * @brief Declaration of Averager module.
  */
 
-#ifndef GPS_READER_THREAD_H
-#define GPS_READER_THREAD_H
+#ifndef AVERAGER_H
+#define AVERAGER_H
 
 /*****************************************************************************/
 /* INCLUDES                                                                  */
 /*****************************************************************************/
-#include "ch.h"
+#include <stddef.h>
+#include <stdbool.h>
 
 /*****************************************************************************/
 /* DEFINED CONSTANTS                                                         */
 /*****************************************************************************/
+#define CIRCULAR_BUFFER_LENGTH   (180)
 
 /*****************************************************************************/
 /* MACRO DEFINITIONS                                                         */
@@ -22,6 +24,11 @@
 /*****************************************************************************/
 /* TYPE DEFINITIONS                                                          */
 /*****************************************************************************/
+typedef struct Averager_s {
+    size_t index;
+    double buffer[CIRCULAR_BUFFER_LENGTH];
+    bool isFull;
+} Averager_t;
 
 /*****************************************************************************/
 /* DECLARATION OF GLOBAL VARIABLES                                           */
@@ -30,20 +37,11 @@
 /*****************************************************************************/
 /* DECLARATION OF GLOBAL FUNCTIONS                                           */
 /*****************************************************************************/
-#ifdef __cplusplus
-extern "C" {
-#endif
+void AVG_Init(Averager_t *pavg);
+void AVG_Clear(Averager_t *pavg);
+void AVG_Put(Averager_t *pavg, double value);
+double AVG_GetAverage(Averager_t *pavg);
 
-THD_FUNCTION(GPS_Thread, arg);
-
-void GPS_ThreadInit(void);
-
-double GPS_GetSpeed(void);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* GPS_READER_THREAD_H */
+#endif /* AVERAGER_H */
 
 /****************************** END OF FILE **********************************/

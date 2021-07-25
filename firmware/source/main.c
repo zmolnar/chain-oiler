@@ -18,8 +18,10 @@
 #include "hal.h"
 
 #include "GpsReaderThread.h"
+#include "ChainOilerThread.h"
 
 static THD_WORKING_AREA(waGpsReaderThread, 4096);
+static THD_WORKING_AREA(waChainOilerThread, 4096);
 
 /*
  * Application entry point.
@@ -36,12 +38,19 @@ int main(void) {
   halInit();
   chSysInit();
 
-  GpsReaderThreadInit();
+  GPS_ThreadInit();
+  COT_Init();
 
   chThdCreateStatic(waGpsReaderThread,
                     sizeof(waGpsReaderThread),
                     NORMALPRIO,
-                    GpsReaderThread,
+                    GPS_Thread,
+                    NULL);  
+
+  chThdCreateStatic(waChainOilerThread,
+                    sizeof(waChainOilerThread),
+                    NORMALPRIO,
+                    COT_Thread,
                     NULL);  
 
   while (true) {

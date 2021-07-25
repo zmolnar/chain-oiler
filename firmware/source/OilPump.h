@@ -1,15 +1,14 @@
 /**
- * @file GpsReaderThread.h
- * @brief
+ * @file OilPump.h
+ * @brief Declaration of the oil pump module.
  */
 
-#ifndef GPS_READER_THREAD_H
-#define GPS_READER_THREAD_H
+#ifndef OIL_PUMP_H
+#define OIL_PUMP_H
 
 /*****************************************************************************/
 /* INCLUDES                                                                  */
 /*****************************************************************************/
-#include "ch.h"
 
 /*****************************************************************************/
 /* DEFINED CONSTANTS                                                         */
@@ -30,20 +29,21 @@
 /*****************************************************************************/
 /* DECLARATION OF GLOBAL FUNCTIONS                                           */
 /*****************************************************************************/
-#ifdef __cplusplus
-extern "C" {
-#endif
+/**
+ * @brief Start continuous operation.
+ */
+void OLP_Start(void);
 
-THD_FUNCTION(GPS_Thread, arg);
+/**
+ * @brief Stop operation.
+ */
+void OLP_Stop(void);
 
-void GPS_ThreadInit(void);
+/**
+ * @brief Release one single oil drop.
+ */
+void OLP_ReleaseOneDrop(void);
 
-double GPS_GetSpeed(void);
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif /* GPS_READER_THREAD_H */
+#endif /* OIL_PUMP_H */
 
 /****************************** END OF FILE **********************************/

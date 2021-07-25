@@ -7,6 +7,7 @@
 /* INCLUDES                                                                  */
 /*****************************************************************************/
 #include "GpsReaderThread.h"
+#include "ChainOilerThread.h"
 #include "MicroNMEA.h"
 
 #include "hal.h"
@@ -57,20 +58,15 @@ static bool parsedSuccessfully = true;
 /*****************************************************************************/
 /* DEFINITION OF LOCAL FUNCTIONS                                             */
 /*****************************************************************************/
-static void unknownSentenceHandler(MicroNMEA &nmea)
+static void l_unknownSentenceHandler(MicroNMEA &nmea)
 {
   (void)nmea;
   parsedSuccessfully = false;
 }
 
-static bool isGpsLocked(void)
-{
-  return (PAL_HIGH == palReadLine(LINE_GPS_3DFIX));
-}
+static void l_updateStatusLedI(virtual_timer_t *tim, void *par);
 
-static void updateStatusLedI(virtual_timer_t *tim, void *par);
-
-static void stateAcquiringLedBlinkerI(virtual_timer_t *tim, void *par)
+static void l_stateAcquiringLedBlinkerI(virtual_timer_t *tim, void *par)
 {
   (void)par;
 
@@ -80,18 +76,18 @@ static void stateAcquiringLedBlinkerI(virtual_timer_t *tim, void *par)
     palSetLine(LINE_GPS_STATUS);
     
     chSysLockFromISR();
-    chVTSetI(tim, chTimeMS2I(500), stateAcquiringLedBlinkerI, NULL);
+    chVTSetI(tim, chTimeMS2I(500), l_stateAcquiringLedBlinkerI, NULL);
     chSysUnlockFromISR();
   } else {
     palClearLine(LINE_GPS_STATUS);
 
     chSysLockFromISR();
-    chVTSetI(tim, chTimeMS2I(500), updateStatusLedI, NULL);
+    chVTSetI(tim, chTimeMS2I(500), l_updateStatusLedI, NULL);
     chSysUnlockFromISR();
   }
 }
 
-static void stateLockedLedBlinkerI(virtual_timer_t *tim, void *par)
+static void l_stateLockedLedBlinkerI(virtual_timer_t *tim, void *par)
 {
   uint32_t pulseCount = (uint32_t)par;
 
@@ -107,17 +103,17 @@ static void stateLockedLedBlinkerI(virtual_timer_t *tim, void *par)
     }
 
     chSysLockFromISR();
-    chVTSetI(tim, chTimeMS2I(125), stateLockedLedBlinkerI, (void*)pulseCount);
+    chVTSetI(tim, chTimeMS2I(125), l_stateLockedLedBlinkerI, (void*)pulseCount);
     chSysUnlockFromISR();
 
   } else {
     chSysLockFromISR();
-    chVTSetI(tim, chTimeMS2I(1000), updateStatusLedI, NULL);
+    chVTSetI(tim, chTimeMS2I(1000), l_updateStatusLedI, NULL);
     chSysUnlockFromISR();
   }
 }
 
-static void stateErrorLedBlinkerI(virtual_timer_t *tim, void *par)
+static void l_stateErrorLedBlinkerI(virtual_timer_t *tim, void *par)
 {
   (void)par;
 
@@ -127,48 +123,69 @@ static void stateErrorLedBlinkerI(virtual_timer_t *tim, void *par)
     palSetLine(LINE_GPS_STATUS);
     
     chSysLockFromISR();
-    chVTSetI(tim, chTimeMS2I(1000), stateErrorLedBlinkerI, NULL);
+    chVTSetI(tim, chTimeMS2I(1000), l_stateErrorLedBlinkerI, NULL);
     chSysUnlockFromISR();
   } else {
     palClearLine(LINE_GPS_STATUS);
 
-    updateStatusLedI(tim, NULL);
+    l_updateStatusLedI(tim, NULL);
   }
 }
 
-static void updateStatusLedI(virtual_timer_t *tim, void *par)
+static void l_updateStatusLedI(virtual_timer_t *tim, void *par)
 {
   (void)par;
 
   switch(gps.state) {
     case GPS_ACQUIRING: 
-      stateAcquiringLedBlinkerI(tim, NULL);
+      l_stateAcquiringLedBlinkerI(tim, NULL);
       break;
     case GPS_LOCKED:
-      stateLockedLedBlinkerI(tim, (void*)gps.numOfSatsInView);
+      l_stateLockedLedBlinkerI(tim, (void*)gps.numOfSatsInView);
       break;
     case GPS_ERROR:
-      stateErrorLedBlinkerI(tim, NULL);
+      l_stateErrorLedBlinkerI(tim, NULL);
       break;
     case GPS_INIT:
       palClearLine(LINE_GPS_STATUS);
       chSysLockFromISR();
-      chVTSetI(tim, chTimeMS2I(1000), updateStatusLedI, NULL);
+      chVTSetI(tim, chTimeMS2I(1000), l_updateStatusLedI, NULL);
       chSysUnlockFromISR();
     default: 
       break;
   }
 }
 
-static inline uint32_t thousandKnotToKmh(long thousandKnot)
+static inline uint32_t l_thousandKnotToKmh(long thousandKnot)
 {
   return ((double)thousandKnot * 0.001852);
+}
+
+static void l_3DFixPinInterrupt(void *p)
+{
+  (void)p;
+
+  bool isRisingEdge = (PAL_HIGH == palReadLine(LINE_GPS_3DFIX));
+  if(isRisingEdge) {
+    COT_AdaptiveStartI();
+    gps.state = GPS_LOCKED;
+  } else {
+    COT_AdaptiveStopI();
+    gps.state = GPS_ACQUIRING;
+  }
+}
+
+static void l_configure3DFixPin(void)
+{
+  palSetLineMode(LINE_GPS_3DFIX, PAL_MODE_INPUT);
+  palSetLineCallback(LINE_GPS_3DFIX, l_3DFixPinInterrupt, NULL);
+  palEnableLineEvent(LINE_GPS_3DFIX, PAL_EVENT_MODE_BOTH_EDGES);
 }
 
 /*****************************************************************************/
 /* DEFINITION OF GLOBAL FUNCTIONS                                            */
 /*****************************************************************************/
-THD_FUNCTION(GpsReaderThread, arg) {
+THD_FUNCTION(GPS_Thread, arg) {
 
   (void)arg;
   
@@ -178,10 +195,20 @@ THD_FUNCTION(GpsReaderThread, arg) {
 
   static char buffer[200];
   MicroNMEA nmea(buffer, (uint8_t)sizeof(buffer));
-  nmea.setUnknownSentenceHandler(unknownSentenceHandler);
+  nmea.setUnknownSentenceHandler(l_unknownSentenceHandler);
   nmea.clear();
 
-  chVTSet(&gps.timer, chTimeMS2I(1000), updateStatusLedI, NULL);
+  chVTSet(&gps.timer, chTimeMS2I(1000), l_updateStatusLedI, NULL);
+
+  if(PAL_HIGH == palReadLine(LINE_GPS_3DFIX)) {
+    gps.state = GPS_LOCKED;
+    COT_AdaptiveStart();
+  } else {
+    gps.state = GPS_ACQUIRING;
+    COT_AdaptiveStop();
+  }
+
+  l_configure3DFixPin();
 
   while(true) {
 
@@ -195,20 +222,15 @@ THD_FUNCTION(GpsReaderThread, arg) {
 
       if (sentenceComplete) {
         if(parsedSuccessfully) {
-          gps.speed = thousandKnotToKmh(nmea.getSpeed());
+          gps.speed = l_thousandKnotToKmh(nmea.getSpeed());
           gps.numOfSatsInView = nmea.getNumSatellites();
+
+          COT_UpdateSpeed();
         }
 
         // Set this variable to flush unknown sentences.
         parsedSuccessfully = true;
       }
-
-      gps.state = isGpsLocked() ? GPS_LOCKED : GPS_ACQUIRING;
-
-      if(GPS_LOCKED == gps.state) {
-        // TODO send speed to chain oiler thread
-      }
-
     } else {
       gps.state = GPS_ERROR;
       gps.speed = 0.0;
@@ -217,7 +239,7 @@ THD_FUNCTION(GpsReaderThread, arg) {
   }
 } 
 
-void GpsReaderThreadInit(void)
+void GPS_ThreadInit(void)
 {
   gps.state = GPS_INIT;
   chVTObjectInit(&gps.timer);
@@ -225,7 +247,7 @@ void GpsReaderThreadInit(void)
   gps.numOfSatsInView = 0U;
 }
 
-double GpsGetSpeed(void)
+double GPS_GetSpeed(void)
 {
   return gps.speed;
 }
